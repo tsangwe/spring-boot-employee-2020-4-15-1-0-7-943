@@ -29,4 +29,8 @@ public class CompanyService {
     public List<Employee> getEmployeesInCompany(int companyId) {
         return Objects.requireNonNull(companies.stream().filter(company -> company.getCompanyId() == companyId).findFirst().orElse(null)).getEmployees();
     }
+
+    public void addCompany(Company company) {
+        companies.add(company);
+    }
 }

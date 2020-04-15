@@ -19,15 +19,24 @@ public class CompanyService {
     }
 
     public List<Company> getCompaniesInRange(int page, int pageSize) {
-        return companies.stream().limit(page * pageSize).collect(Collectors.toList());
+        return companies.stream()
+                .limit(page * pageSize)
+                .collect(Collectors.toList());
     }
 
     public Company getCompanyById(int companyId) {
-        return companies.stream().filter(company -> company.getCompanyId() == companyId).findFirst().orElse(null);
+        return companies.stream()
+                .filter(company -> company.getCompanyId() == companyId)
+                .findFirst()
+                .orElse(null);
     }
 
     public List<Employee> getEmployeesInCompany(int companyId) {
-        return Objects.requireNonNull(companies.stream().filter(company -> company.getCompanyId() == companyId).findFirst().orElse(null)).getEmployees();
+        return Objects.requireNonNull(companies.stream()
+                .filter(company -> company.getCompanyId() == companyId)
+                .findFirst()
+                .orElse(null))
+                .getEmployees();
     }
 
     public void addCompany(Company company) {
@@ -35,6 +44,9 @@ public class CompanyService {
     }
 
     public void updateCompanyName(int companyId, String newName) {
-        Objects.requireNonNull(companies.stream().filter(company -> company.getCompanyId() == companyId).findFirst().orElse(null)).setCompanyName(newName);
+        Objects.requireNonNull(companies.stream()
+                .filter(company -> company.getCompanyId() == companyId)
+                .findFirst().orElse(null))
+                .setCompanyName(newName);
     }
 }

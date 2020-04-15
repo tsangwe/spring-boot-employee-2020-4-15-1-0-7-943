@@ -34,4 +34,8 @@ public class EmployeesService {
                 .findFirst()
                 .orElse(null);
     }
+
+    public void addEmployee(Employee employee) {
+        employees.add(employee);
+    }
 }

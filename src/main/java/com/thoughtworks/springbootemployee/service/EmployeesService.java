@@ -49,6 +49,6 @@ public class EmployeesService {
     }
 
     public void deleteEmployee(int id) {
-
+        employees.removeIf(employee -> employee.getId() == id);
     }
 }

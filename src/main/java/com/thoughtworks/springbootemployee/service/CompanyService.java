@@ -33,4 +33,8 @@ public class CompanyService {
     public void addCompany(Company company) {
         companies.add(company);
     }
+
+    public void updateCompanyName(int companyId, String newName) {
+        Objects.requireNonNull(companies.stream().filter(company -> company.getCompanyId() == companyId).findFirst().orElse(null)).setCompanyName(newName);
+    }
 }

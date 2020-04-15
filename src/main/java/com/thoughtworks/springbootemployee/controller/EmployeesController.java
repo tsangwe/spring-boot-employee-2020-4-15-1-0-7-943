@@ -23,15 +23,15 @@ public class EmployeesController {
         return null;
     }
 
-    @GetMapping(path = "/employees")
-    public List<Employee> getEmployeesInRange(@RequestParam int page, @RequestParam int pageSize) {
-        return null;
-    }
-
-    @GetMapping(path = "/employees")
-    public List<Employee> getEmployeesByGender(@RequestParam String gender) {
-        return null;
-    }
+//    @GetMapping(path = "/employees")
+//    public List<Employee> getEmployeesInRange(@RequestParam int page, @RequestParam int pageSize) {
+//        return null;
+//    }
+//
+//    @GetMapping(path = "/employees")
+//    public List<Employee> getEmployeesByGender(@RequestParam String gender) {
+//        return null;
+//    }
 
     @PostMapping(path = "/employees")
     public void addEmployee() {

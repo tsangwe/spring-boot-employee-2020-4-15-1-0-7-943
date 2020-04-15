@@ -19,4 +19,8 @@ public class CompanyService {
     public List<Company> getCompaniesInRange(int page, int pageSize) {
         return companies.stream().limit(page * pageSize).collect(Collectors.toList());
     }
+
+    public Company getCompanyById(int companyId) {
+        return companies.stream().filter(company -> company.getCompanyId() == companyId).findFirst().orElse(null);
+    }
 }

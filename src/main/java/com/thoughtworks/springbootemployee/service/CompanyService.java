@@ -49,4 +49,12 @@ public class CompanyService {
                 .findFirst().orElse(null))
                 .setCompanyName(newName);
     }
+
+    public void deleteAllEmployeesInCompany(int companyId) {
+        Objects.requireNonNull(companies.stream()
+                .filter(company -> company.getCompanyId() == companyId)
+                .findFirst()
+                .orElse(null))
+                .setEmployees(new ArrayList<>());
+    }
 }

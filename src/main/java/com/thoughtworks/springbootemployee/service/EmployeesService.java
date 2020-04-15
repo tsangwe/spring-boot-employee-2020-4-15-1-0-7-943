@@ -41,6 +41,14 @@ public class EmployeesService {
     }
 
     public void updateEmployee(int id, String newName) {
-        Objects.requireNonNull(employees.stream().filter(employee -> employee.getId() == id).findFirst().orElse(null)).setName(newName);
+        Objects.requireNonNull(employees.stream()
+                .filter(employee -> employee.getId() == id)
+                .findFirst()
+                .orElse(null))
+                .setName(newName);
+    }
+
+    public void deleteEmployee(int id) {
+
     }
 }

@@ -14,24 +14,22 @@ public class EmployeesController {
     private EmployeesService employeesService;
 
     @GetMapping(path = "/employees")
-    public List<Employee> getEmployees() {
-        return null;
+    public List<Employee> getEmployees(@RequestParam(required = false) Integer page,
+                                       @RequestParam(required = false) Integer pageSize,
+                                       @RequestParam(required = false) String gender) {
+        if (page == null || pageSize == null) {
+            if (gender == null) {
+                return employeesService.getAllCompanies();
+            }
+            return employeesService.getEmployeesByGender(gender);
+        }
+        return employeesService.getEmployeesInRange(page, pageSize);
     }
 
     @GetMapping(path = "/employees/{id}")
     public Employee getEmployee(@PathVariable String id) {
         return null;
     }
-
-//    @GetMapping(path = "/employees")
-//    public List<Employee> getEmployeesInRange(@RequestParam int page, @RequestParam int pageSize) {
-//        return null;
-//    }
-//
-//    @GetMapping(path = "/employees")
-//    public List<Employee> getEmployeesByGender(@RequestParam String gender) {
-//        return null;
-//    }
 
     @PostMapping(path = "/employees")
     public void addEmployee() {

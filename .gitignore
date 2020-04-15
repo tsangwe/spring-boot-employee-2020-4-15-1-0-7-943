@@ -1,31 +1,30 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**
-!**/src/test/**
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
+target
 .idea
-*.iws
+*.log
+*.jar
+.settings
+.project
+.classpath
+*.class
+bin
+*.orig
+*.bak
+*.old
+*.ear
+*.LOCAL
+*.REMOTE
+.metadata
+*~
+build.out
+build.err
+rebel.xml
+rebel-remote.xml
 *.iml
 *.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-
+*.iws
+.idea
+*.db
+deploy2Remote.bat
 ### VS Code ###
 .vscode/
+.factorypath

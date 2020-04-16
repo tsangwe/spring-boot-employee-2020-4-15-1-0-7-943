@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,12 +39,11 @@ public class EmployeesService {
         employees.add(employee);
     }
 
-    public void updateEmployee(int id, String newName) {
-        Objects.requireNonNull(employees.stream()
-                .filter(employee -> employee.getId() == id)
-                .findFirst()
-                .orElse(null))
-                .setName(newName);
+    public void updateEmployee(int id, Employee newEmployee) {
+        employees.stream()
+                .filter(currentEmployee -> currentEmployee.getId() == id)
+                .collect(Collectors.toList())
+                .replaceAll(currentEmployee -> currentEmployee = newEmployee);
     }
 
     public void deleteEmployee(int id) {

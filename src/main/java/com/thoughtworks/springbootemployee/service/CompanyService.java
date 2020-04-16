@@ -43,11 +43,11 @@ public class CompanyService {
         companies.add(company);
     }
 
-    public void updateCompanyName(int companyId, String newName) {
-        Objects.requireNonNull(companies.stream()
-                .filter(company -> company.getCompanyId() == companyId)
-                .findFirst().orElse(null))
-                .setCompanyName(newName);
+    public void updateCompanyName(int companyId, Company newCompany) {
+        companies.stream()
+                .filter(currentCompany -> currentCompany.getCompanyId() == companyId)
+                .collect(Collectors.toList())
+                .replaceAll(currentCompany -> currentCompany = newCompany);
     }
 
     public void deleteAllEmployeesInCompany(int companyId) {

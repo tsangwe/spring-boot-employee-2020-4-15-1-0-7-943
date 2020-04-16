@@ -4,7 +4,9 @@ import com.thoughtworks.springbootemployee.model.Employee;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,10 +43,11 @@ public class EmployeesService {
     }
 
     public void updateEmployee(int id, Employee newEmployee) {
-        employees.stream()
-                .filter(currentEmployee -> currentEmployee.getId() == id)
-                .collect(Collectors.toList())
-                .replaceAll(currentEmployee -> currentEmployee = newEmployee);
+        Employee employee = Objects.requireNonNull(employees.stream()
+                .filter(currentCompany -> currentCompany.getId() == id)
+                .findFirst()
+                .orElse(null));
+        Collections.replaceAll(employees, employee, newEmployee);
     }
 
     public void deleteEmployee(int id) {

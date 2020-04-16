@@ -143,4 +143,26 @@ public class EmployeesControllerTest {
         Assert.assertEquals(4, employees.size());
         Assert.assertEquals(employee4, employees.get(3));
     }
+
+    @Test
+    public void should_update_employee_when_updateEmployee() {
+        MockMvcResponse response = given().contentType(ContentType.JSON)
+                .body(employee4)
+                .when()
+                .put(DEFAULT_PATH_PREFIX + "/employees/1");
+        Assert.assertEquals(200, response.getStatusCode());
+
+        MockMvcResponse responseAfter = given()
+                .when()
+                .get(DEFAULT_PATH_PREFIX + "/employees");
+
+        List<Employee> employees = responseAfter.getBody().as(new TypeRef<List<Employee>>() {
+            @Override
+            public Type getType() {
+                return super.getType();
+            }
+        });
+        Assert.assertEquals(employee4, employees.get(0));
+    }
+
 }

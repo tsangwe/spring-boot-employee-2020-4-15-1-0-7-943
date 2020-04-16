@@ -5,6 +5,7 @@ import com.thoughtworks.springbootemployee.model.Employee;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -40,16 +41,18 @@ public class CompanyService {
                 .getEmployees();
     }
 
-    public List<Company> addCompany(Company company) {
+    public Company addCompany(Company company) {
         companies.add(company);
-        return companies;
+        return company;
     }
 
-    public void updateCompanyName(int companyId, Company newCompany) {
-        companies.stream()
+    public Company updateCompany(int companyId, Company newCompany) {
+        Company company = Objects.requireNonNull(companies.stream()
                 .filter(currentCompany -> currentCompany.getCompanyId() == companyId)
-                .collect(Collectors.toList())
-                .replaceAll(currentCompany -> currentCompany = newCompany);
+                .findFirst()
+                .orElse(null));
+        Collections.replaceAll(companies, company, newCompany);
+        return newCompany;
     }
 
     public void deleteAllEmployeesInCompany(int companyId) {

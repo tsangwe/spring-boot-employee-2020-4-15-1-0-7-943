@@ -142,13 +142,62 @@ public class CompanyControllerTest {
 
         Assert.assertEquals(200, response.getStatusCode());
 
-        List<Company> companies = response.getBody().as(new TypeRef<List<Company>>() {
+        MockMvcResponse responseAfter = given()
+                .when()
+                .get(DEFAULT_PATH_PREFIX + "/companies");
+        List<Company> companies = responseAfter.getBody().as(new TypeRef<List<Company>>() {
             @Override
             public Type getType() {
                 return super.getType();
             }
         });
 
+
         Assert.assertEquals(4, companies.size());
+        Assert.assertEquals(company4, companies.get(3));
+    }
+
+    @Test
+    public void should_return_latest_list_of_companies_when_update_company() {
+        MockMvcResponse response = given().contentType(ContentType.JSON)
+                .body(company1)
+                .when()
+                .put(DEFAULT_PATH_PREFIX + "/companies/3");
+
+        Assert.assertEquals(200, response.getStatusCode());
+
+        MockMvcResponse responseAfter = given()
+                .when()
+                .get(DEFAULT_PATH_PREFIX + "/companies");
+        List<Company> companies = responseAfter.getBody().as(new TypeRef<List<Company>>() {
+            @Override
+            public Type getType() {
+                return super.getType();
+            }
+        });
+
+        Assert.assertEquals(company1, companies.get(2));
+    }
+
+    @Test
+    public void should_return_nothing_when_delete_all_employees_in_company() {
+        MockMvcResponse response = given().contentType(ContentType.JSON)
+                .body(company1)
+                .when()
+                .delete(DEFAULT_PATH_PREFIX + "/companies/3");
+
+        Assert.assertEquals(200, response.getStatusCode());
+
+        MockMvcResponse responseAfter = given()
+                .when()
+                .get(DEFAULT_PATH_PREFIX + "/companies");
+        List<Company> companies = responseAfter.getBody().as(new TypeRef<List<Company>>() {
+            @Override
+            public Type getType() {
+                return super.getType();
+            }
+        });
+
+        Assert.assertTrue(companies.get(2).getEmployees().isEmpty());
     }
 }

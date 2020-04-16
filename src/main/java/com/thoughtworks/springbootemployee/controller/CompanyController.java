@@ -33,13 +33,13 @@ public class CompanyController {
     }
 
     @PostMapping(path = "/companies/{companyId}")
-    public List<Company> addCompany(@PathVariable int companyId, @RequestBody Company company) {
+    public Company addCompany(@PathVariable int companyId, @RequestBody Company company) {
         return companyService.addCompany(company);
     }
 
     @PutMapping(path = "/companies/{companyId}")
-    public void updateCompany(@PathVariable int companyId, @RequestBody Company newCompany) {
-        companyService.updateCompanyName(companyId, newCompany);
+    public Company updateCompany(@PathVariable int companyId, @RequestBody Company newCompany) {
+        return companyService.updateCompany(companyId, newCompany);
     }
 
     @DeleteMapping(path = "/companies/{companyId}")

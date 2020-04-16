@@ -24,7 +24,8 @@ public class EmployeesService {
 
     public List<Employee> getEmployeesInRange(Integer page, Integer pageSize) {
         return employees.stream()
-                .limit(page * pageSize)
+                .skip(page == 1 ? (page - 1) * pageSize : 0)
+                .limit(pageSize)
                 .collect(Collectors.toList());
     }
 

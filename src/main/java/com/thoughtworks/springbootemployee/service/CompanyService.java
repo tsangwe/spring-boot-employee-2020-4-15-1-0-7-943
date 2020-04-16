@@ -20,7 +20,8 @@ public class CompanyService {
 
     public List<Company> getCompaniesInRange(int page, int pageSize) {
         return companies.stream()
-                .limit(page * pageSize)
+                .skip(page == 1 ? (page - 1) * pageSize : 0)
+                .limit(pageSize)
                 .collect(Collectors.toList());
     }
 

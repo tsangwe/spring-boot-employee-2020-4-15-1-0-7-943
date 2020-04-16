@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
@@ -46,10 +47,10 @@ public class EmployeesControllerTest {
                 = MockMvcBuilders.standaloneSetup(employeesController);
         RestAssuredMockMvc.standaloneSetup(standaloneMockMvcBuilder);
 
-        employee1 = new Employee();
-        employee2 = new Employee();
-        employee3 = new Employee();
-        employee4 = new Employee();
+        employee1 = new Employee(1, "Wesley", 10, "Male", 100);
+        employee2 = new Employee(2, "Lusi", 11, "Female", 1000);
+        employee3 = new Employee(3, "Harvey", 12, "Male", 0);
+        employee4 = new Employee(4, "Angel", 13, "Female", 1000);
 
         employeesService.addEmployee(employee1);
         employeesService.addEmployee(employee2);
@@ -73,5 +74,40 @@ public class EmployeesControllerTest {
         expectedOutput.add(employee2);
         expectedOutput.add(employee3);
         Assert.assertEquals(gson.toJson(expectedOutput), gson.toJson(employees));
+    }
+
+    @Test
+    public void should_return_page_of_employees_when_employees_with_params() {
+        MockMvcResponse response = given()
+                .params(new HashMap<String, Integer>() {{
+                    put("page", 2);
+                    put("pageSize", 2);
+                }})
+                .when()
+                .get(DEFAULT_PATH_PREFIX + "/employees");
+        Assert.assertEquals(200, response.getStatusCode());
+        List<Employee> employees = response.getBody().as(new TypeRef<List<Employee>>() {
+            @Override
+            public Type getType() {
+                return super.getType();
+            }
+        });
+        Assert.assertEquals(1, employees.size());
+    }
+
+    @Test
+    public void should_return_page_of_companies_when_companies_with_params() {
+        MockMvcResponse response = given()
+                .params("gender", "Male")
+                .when()
+                .get(DEFAULT_PATH_PREFIX + "/employees");
+        Assert.assertEquals(200, response.getStatusCode());
+        List<Employee> companies = response.getBody().as(new TypeRef<List<Employee>>() {
+            @Override
+            public Type getType() {
+                return super.getType();
+            }
+        });
+        Assert.assertEquals(2, companies.size());
     }
 }

@@ -77,7 +77,7 @@ public class EmployeesControllerTest {
     }
 
     @Test
-    public void should_return_page_of_employees_when_employees_with_params() {
+    public void should_return_page_of_employees_when_employees_with_page_params() {
         MockMvcResponse response = given()
                 .params(new HashMap<String, Integer>() {{
                     put("page", 2);
@@ -96,18 +96,28 @@ public class EmployeesControllerTest {
     }
 
     @Test
-    public void should_return_page_of_companies_when_companies_with_params() {
+    public void should_return_male_employees_when_companies_with_gender_param() {
         MockMvcResponse response = given()
                 .params("gender", "Male")
                 .when()
                 .get(DEFAULT_PATH_PREFIX + "/employees");
         Assert.assertEquals(200, response.getStatusCode());
-        List<Employee> companies = response.getBody().as(new TypeRef<List<Employee>>() {
+        List<Employee> employees = response.getBody().as(new TypeRef<List<Employee>>() {
             @Override
             public Type getType() {
                 return super.getType();
             }
         });
-        Assert.assertEquals(2, companies.size());
+        Assert.assertEquals(2, employees.size());
+    }
+
+    @Test
+    public void should_return_company_when_provide_company_with_id() {
+        MockMvcResponse response = given()
+                .when()
+                .get(DEFAULT_PATH_PREFIX + "/employees/1");
+        Assert.assertEquals(200, response.getStatusCode());
+        String employee = response.getBody().asString();
+        Assert.assertEquals(gson.toJson(employee1), employee);
     }
 }

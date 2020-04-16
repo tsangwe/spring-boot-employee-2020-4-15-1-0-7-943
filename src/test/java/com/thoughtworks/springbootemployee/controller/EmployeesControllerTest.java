@@ -3,6 +3,7 @@ package com.thoughtworks.springbootemployee.controller;
 import com.google.gson.Gson;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.service.EmployeesService;
+import io.restassured.http.ContentType;
 import io.restassured.mapper.TypeRef;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.response.MockMvcResponse;
@@ -119,5 +120,27 @@ public class EmployeesControllerTest {
         Assert.assertEquals(200, response.getStatusCode());
         String employee = response.getBody().asString();
         Assert.assertEquals(gson.toJson(employee1), employee);
+    }
+
+    @Test
+    public void should_add_employee_when_addEmployee() {
+        MockMvcResponse response = given().contentType(ContentType.JSON)
+                .body(employee4)
+                .when()
+                .post(DEFAULT_PATH_PREFIX + "/employees");
+        Assert.assertEquals(200, response.getStatusCode());
+
+        MockMvcResponse responseAfter = given()
+                .when()
+                .get(DEFAULT_PATH_PREFIX + "/employees");
+
+        List<Employee> employees = responseAfter.getBody().as(new TypeRef<List<Employee>>() {
+            @Override
+            public Type getType() {
+                return super.getType();
+            }
+        });
+        Assert.assertEquals(4, employees.size());
+        Assert.assertEquals(employee4, employees.get(3));
     }
 }

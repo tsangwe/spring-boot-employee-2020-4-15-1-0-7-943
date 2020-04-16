@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.service.CompanyService;
+import io.restassured.http.ContentType;
 import io.restassured.mapper.TypeRef;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.restassured.module.mockmvc.response.MockMvcResponse;
@@ -43,6 +44,8 @@ public class CompanyControllerTest {
     private Company company1;
     private Company company2;
     private Company company3;
+    private Company company4;
+
 
     @Before
     public void setup() {
@@ -62,6 +65,9 @@ public class CompanyControllerTest {
                         .collect(Collectors.toList()));
         company3 = new Company(3, "Small Potato", 1,
                 Stream.of(new Employee(1, "Tony", 30, "Female", 0))
+                        .collect(Collectors.toList()));
+        company4 = new Company(4, "New World", 1,
+                Stream.of(new Employee(1, "God", 30000, "Male", 0))
                         .collect(Collectors.toList()));
 
         companyService.addCompany(company1);
@@ -125,5 +131,24 @@ public class CompanyControllerTest {
         Assert.assertEquals(200, response.getStatusCode());
         String employee = response.getBody().asString();
         Assert.assertEquals(gson.toJson(company3.getEmployees()), employee);
+    }
+
+    @Test
+    public void should_return_latest_list_of_companies_when_add_company() {
+        MockMvcResponse response = given().contentType(ContentType.JSON)
+                .body(company4)
+                .when()
+                .post(DEFAULT_PATH_PREFIX + "/companies/4");
+
+        Assert.assertEquals(200, response.getStatusCode());
+
+        List<Company> companies = response.getBody().as(new TypeRef<List<Company>>() {
+            @Override
+            public Type getType() {
+                return super.getType();
+            }
+        });
+
+        Assert.assertEquals(4, companies.size());
     }
 }

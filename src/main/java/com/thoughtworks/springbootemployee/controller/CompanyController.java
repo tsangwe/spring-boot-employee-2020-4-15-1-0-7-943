@@ -32,9 +32,9 @@ public class CompanyController {
         return companyService.getEmployeesInCompany(companyId);
     }
 
-    @PostMapping(path = "/companies")
-    public void addCompany(@RequestBody Company company) {
-        companyService.addCompany(company);
+    @PostMapping(path = "/companies/{companyId}")
+    public List<Company> addCompany(@PathVariable int companyId, @RequestBody Company company) {
+        return companyService.addCompany(company);
     }
 
     @PutMapping(path = "/companies/{companyId}")

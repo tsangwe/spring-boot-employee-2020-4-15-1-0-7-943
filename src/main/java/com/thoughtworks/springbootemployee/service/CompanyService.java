@@ -40,8 +40,9 @@ public class CompanyService {
                 .getEmployees();
     }
 
-    public void addCompany(Company company) {
+    public List<Company> addCompany(Company company) {
         companies.add(company);
+        return companies;
     }
 
     public void updateCompanyName(int companyId, Company newCompany) {

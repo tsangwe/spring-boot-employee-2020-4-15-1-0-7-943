@@ -19,7 +19,7 @@ public class EmployeesController {
                                        @RequestParam(required = false) String gender) {
         if (page == null || pageSize == null) {
             if (gender == null) {
-                return employeesService.getAllCompanies();
+                return employeesService.getAllEmployees();
             }
             return employeesService.getEmployeesByGender(gender);
         }

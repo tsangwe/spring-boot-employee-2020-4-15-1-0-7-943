@@ -48,10 +48,10 @@ public class EmployeesControllerTest {
                 = MockMvcBuilders.standaloneSetup(employeesController);
         RestAssuredMockMvc.standaloneSetup(standaloneMockMvcBuilder);
 
-        employee1 = new Employee(1, "Wesley", 10, "Male", 100);
-        employee2 = new Employee(2, "Lusi", 11, "Female", 1000);
-        employee3 = new Employee(3, "Harvey", 12, "Male", 0);
-        employee4 = new Employee(4, "Angel", 13, "Female", 1000);
+        employee1 = new Employee(1, "Wesley", 10, "Male", 100, 1);
+        employee2 = new Employee(2, "Lusi", 11, "Female", 1000, 1);
+        employee3 = new Employee(3, "Harvey", 12, "Male", 0, 1);
+        employee4 = new Employee(4, "Angel", 13, "Female", 1000, 1);
 
         employeesService.addEmployee(employee1);
         employeesService.addEmployee(employee2);

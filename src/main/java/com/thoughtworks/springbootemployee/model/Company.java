@@ -4,14 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class Company {
-    private int companyId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer companyId;
     private String companyName;
-    private int employeesNumber;
+    private Integer employeesNumber;
+    @OneToMany(targetEntity = Employee.class, mappedBy = "companyId", fetch = FetchType.EAGER)
     private List<Employee> employees;
 }

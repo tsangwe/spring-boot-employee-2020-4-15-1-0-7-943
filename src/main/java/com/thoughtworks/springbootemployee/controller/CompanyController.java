@@ -32,8 +32,8 @@ public class CompanyController {
         return companyService.getEmployeesInCompany(companyId);
     }
 
-    @PostMapping(path = "/companies/{companyId}")
-    public Company addCompany(@PathVariable int companyId, @RequestBody Company company) {
+    @PostMapping(path = "/companies")
+    public Company addCompany(@RequestBody Company company) {
         return companyService.addCompany(company);
     }
 

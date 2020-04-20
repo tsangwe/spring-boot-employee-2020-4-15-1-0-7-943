@@ -3,7 +3,6 @@ package com.thoughtworks.springbootemployee.controller;
 import com.google.gson.Gson;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
-import com.thoughtworks.springbootemployee.repository.CompanyRepository;
 import com.thoughtworks.springbootemployee.service.CompanyService;
 import io.restassured.http.ContentType;
 import io.restassured.mapper.TypeRef;
@@ -12,8 +11,10 @@ import io.restassured.module.mockmvc.response.MockMvcResponse;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
 import org.springframework.test.annotation.DirtiesContext;
@@ -28,19 +29,18 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
-
+@RunWith(MockitoJUnitRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @DirtiesContext
 @AutoConfigureMessageVerifier
 public class CompanyControllerTest {
-
-    @Autowired
-    private CompanyController companyController;
-    @Autowired
+    @Mock
     private CompanyService companyService;
     @InjectMocks
-    private CompanyRepository companyRepository;
+    private CompanyController companyController;
     private Gson gson;
     private static final String DEFAULT_PATH_PREFIX = "/api/company";
     private Company company1;
@@ -48,6 +48,16 @@ public class CompanyControllerTest {
     private Company company3;
     private Company company4;
 
+    @Test
+    public void should_add_company() {
+        MockMvcResponse response = given().contentType(ContentType.JSON)
+                .body(company4)
+                .when()
+                .post(DEFAULT_PATH_PREFIX + "/companies");
+
+        Assert.assertEquals(200, response.getStatusCode());
+        verify(companyService, times(1)).addCompany(company4);
+    }
 
     @Before
     public void setup() {

@@ -2,7 +2,7 @@ spring:
   datasource:
     driverClassName: org.h2.Driver
     password: sa
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:D:\projects\TATP\spring-boot-employee-2020-4-15-1-0-7-943\src\main\resources\db\data
     username: sa
   jpa:
     ddl-auto: update

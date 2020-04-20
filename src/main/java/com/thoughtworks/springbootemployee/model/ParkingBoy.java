@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Table(name = "parking_boy")
 public class ParkingBoy {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer parkingBoyId;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parkingBoyId")

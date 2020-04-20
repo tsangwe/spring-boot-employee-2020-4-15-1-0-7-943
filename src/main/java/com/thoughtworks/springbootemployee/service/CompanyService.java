@@ -3,6 +3,7 @@ package com.thoughtworks.springbootemployee.service;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
 import com.thoughtworks.springbootemployee.repository.CompanyRepository;
+import com.thoughtworks.springbootemployee.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import java.util.Objects;
 public class CompanyService {
     @Autowired
     private CompanyRepository companyRepository;
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     public List<Company> getAllCompanies() {
         return companyRepository.findAll();
@@ -52,6 +55,9 @@ public class CompanyService {
     }
 
     public void deleteAllEmployeesInCompany(int companyId) {
-        companyRepository.deleteById(companyId);
+        Company company = companyRepository.getOne(companyId);
+        for (Employee employee: company.getEmployees()) {
+            employeeRepository.deleteById(employee.getEmployeeId());
+        }
     }
 }

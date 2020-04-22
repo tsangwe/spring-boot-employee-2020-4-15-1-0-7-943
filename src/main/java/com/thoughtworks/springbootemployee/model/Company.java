@@ -17,6 +17,7 @@ public class Company {
     private Integer companyId;
     private String companyName;
     private Integer employeesNumber;
+
     @OneToMany(targetEntity = Employee.class, mappedBy = "companyId", fetch = FetchType.EAGER)
     private List<Employee> employees;
 }

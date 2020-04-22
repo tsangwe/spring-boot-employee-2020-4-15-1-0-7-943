@@ -2,8 +2,5 @@ spring:
   datasource:
     driverClassName: org.h2.Driver
     password: sa
-    url: jdbc:h2:D:\projects\TATP\spring-boot-employee-2020-4-15-1-0-7-943\src\main\resources\db\data
+    url: jdbc:h2:tcp://localhost/~/db/test
     username: sa
-  jpa:
-    ddl-auto: update
-    database-platform: org.hibernate.dialect.H2Dialect

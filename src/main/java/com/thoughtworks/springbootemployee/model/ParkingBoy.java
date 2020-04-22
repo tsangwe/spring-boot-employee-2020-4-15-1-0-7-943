@@ -10,8 +10,11 @@ import javax.persistence.*;
 public class ParkingBoy {
     @Id
     private Integer parkingBoyId;
+
+    @Transient
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "parkingBoyId")
     private Employee employee;
-    private String nickName;
+
+    private String nickname;
 }

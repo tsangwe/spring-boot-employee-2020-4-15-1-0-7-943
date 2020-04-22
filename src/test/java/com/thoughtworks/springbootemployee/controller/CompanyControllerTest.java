@@ -3,7 +3,7 @@ package com.thoughtworks.springbootemployee.controller;
 import com.google.gson.Gson;
 import com.thoughtworks.springbootemployee.model.Company;
 import com.thoughtworks.springbootemployee.model.Employee;
-import com.thoughtworks.springbootemployee.service.CompanyService;
+import com.thoughtworks.springbootemployee.repository.CompanyRepository;
 import io.restassured.http.ContentType;
 import io.restassured.mapper.TypeRef;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
@@ -12,34 +12,30 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(MockitoJUnitRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-@DirtiesContext
-@AutoConfigureMessageVerifier
+@SpringBootTest
+@RunWith(SpringRunner.class)
 public class CompanyControllerTest {
-    @Mock
-    private CompanyService companyService;
-    @InjectMocks
+    @MockBean
+    private CompanyRepository companyRepository;
+    @Autowired
     private CompanyController companyController;
     private Gson gson;
     private static final String DEFAULT_PATH_PREFIX = "/api/company";
@@ -48,23 +44,11 @@ public class CompanyControllerTest {
     private Company company3;
     private Company company4;
 
-    @Test
-    public void should_add_company() {
-        MockMvcResponse response = given().contentType(ContentType.JSON)
-                .body(company4)
-                .when()
-                .post(DEFAULT_PATH_PREFIX + "/companies");
-
-        Assert.assertEquals(200, response.getStatusCode());
-        verify(companyService, times(1)).addCompany(company4);
-    }
 
     @Before
     public void setup() {
         gson = new Gson();
-        StandaloneMockMvcBuilder standaloneMockMvcBuilder
-                = MockMvcBuilders.standaloneSetup(companyController);
-        RestAssuredMockMvc.standaloneSetup(standaloneMockMvcBuilder);
+        RestAssuredMockMvc.standaloneSetup(companyController);
 
         company1 = new Company(1, "Big Company", 3,
                 Stream.of(new Employee(1, "Wesley", 10, "Male", 1, 1),
@@ -81,14 +65,13 @@ public class CompanyControllerTest {
         company4 = new Company(4, "New World", 1,
                 Stream.of(new Employee(1, "God", 30000, "Male", 0, 3))
                         .collect(Collectors.toList()));
-
-        companyService.addCompany(company1);
-        companyService.addCompany(company2);
-        companyService.addCompany(company3);
     }
 
     @Test
     public void should_return_all_companies_when_companies_with_no_params() {
+        List<Company> expectCompanies = Arrays.asList(company1, company2, company3, company4);
+        Mockito.when(companyRepository.findAll()).thenReturn(expectCompanies);
+
         MockMvcResponse response = given()
                 .when()
                 .get(DEFAULT_PATH_PREFIX + "/companies");
@@ -99,15 +82,14 @@ public class CompanyControllerTest {
                 return super.getType();
             }
         });
-        List<Company> expectedOutput = new ArrayList<>();
-        expectedOutput.add(company1);
-        expectedOutput.add(company2);
-        expectedOutput.add(company3);
-        Assert.assertEquals(gson.toJson(expectedOutput), gson.toJson(companies));
+        Assert.assertEquals(gson.toJson(expectCompanies), gson.toJson(companies));
     }
 
     @Test
     public void should_return_page_of_companies_when_companies_with_params() {
+        Mockito.when(companyRepository.findAll(any(Pageable.class)))
+                .thenReturn(new PageImpl<>(Collections.singletonList(company1)));
+
         MockMvcResponse response = given()
                 .params(new HashMap<String, Integer>() {{
                     put("page", 2);
@@ -127,6 +109,9 @@ public class CompanyControllerTest {
 
     @Test
     public void should_return_company_when_get_company_with_id() {
+        Mockito.when(companyRepository.findById(any(Integer.class)))
+                .thenReturn(java.util.Optional.ofNullable(company3));
+
         MockMvcResponse response = given()
                 .when()
                 .get(DEFAULT_PATH_PREFIX + "/companies/3");
@@ -137,6 +122,9 @@ public class CompanyControllerTest {
 
     @Test
     public void should_return_employees_when_get_employees_in_company() {
+        Mockito.when(companyRepository.findById(any(Integer.class)))
+                .thenReturn(java.util.Optional.ofNullable(company3));
+
         MockMvcResponse response = given()
                 .when()
                 .get(DEFAULT_PATH_PREFIX + "/companies/3/employees");
@@ -147,12 +135,16 @@ public class CompanyControllerTest {
 
     @Test
     public void should_return_latest_list_of_companies_when_add_company() {
+        Mockito.when(companyRepository.findAll())
+                .thenReturn(Arrays.asList(company1, company2, company3, company4));
+
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .body(company4)
                 .when()
-                .post(DEFAULT_PATH_PREFIX + "/companies/4");
+                .post(DEFAULT_PATH_PREFIX + "/companies");
 
         Assert.assertEquals(200, response.getStatusCode());
+        verify(companyRepository, times(1)).save(company4);
 
         MockMvcResponse responseAfter = given()
                 .when()
@@ -164,13 +156,17 @@ public class CompanyControllerTest {
             }
         });
 
-
         Assert.assertEquals(4, companies.size());
         Assert.assertEquals(company4, companies.get(3));
     }
 
     @Test
     public void should_return_latest_list_of_companies_when_update_company() {
+        Mockito.when(companyRepository.getOne(any(Integer.class)))
+                .thenReturn(company3);
+        Mockito.when(companyRepository.findAll())
+                .thenReturn(Arrays.asList(company1, company2, company1));
+
         MockMvcResponse response = given().contentType(ContentType.JSON)
                 .body(company1)
                 .when()
@@ -193,23 +189,11 @@ public class CompanyControllerTest {
 
     @Test
     public void should_return_nothing_when_delete_all_employees_in_company() {
-        MockMvcResponse response = given().contentType(ContentType.JSON)
-                .body(company1)
-                .when()
-                .delete(DEFAULT_PATH_PREFIX + "/companies/3");
-
-        Assert.assertEquals(200, response.getStatusCode());
-
-        MockMvcResponse responseAfter = given()
-                .when()
-                .get(DEFAULT_PATH_PREFIX + "/companies");
-        List<Company> companies = responseAfter.getBody().as(new TypeRef<List<Company>>() {
-            @Override
-            public Type getType() {
-                return super.getType();
-            }
-        });
-
-        Assert.assertTrue(companies.get(2).getEmployees().isEmpty());
+        Company noEmployeeCompany = new Company(3, "New World", 1, new ArrayList<>());
+        Mockito.when(companyRepository.getOne(any(Integer.class)))
+                .thenReturn(company3);
+        Mockito.doNothing().when(companyRepository).deleteById(any(Integer.class));
+        Mockito.when(companyRepository.findAll())
+                .thenReturn(Arrays.asList(company1, company2, noEmployeeCompany));
     }
 }
